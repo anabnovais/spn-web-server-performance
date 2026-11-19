@@ -1,0 +1,466 @@
+{
+  "modelName": "SPN Servidor Web - Cache e Workers",
+  "places": [
+    {
+      "name": "P_Vagas",
+      "initialMarking": 16,
+      "stringMarking": "K_SIS",
+      "initialStringMarking": "K_SIS",
+      "id": "p1",
+      "x": 120,
+      "y": 80,
+      "labelX": 120,
+      "labelY": 120
+    },
+    {
+      "name": "P_Fila",
+      "initialMarking": 0,
+      "stringMarking": "0",
+      "initialStringMarking": "0",
+      "id": "p2",
+      "x": 420,
+      "y": 200,
+      "labelX": 420,
+      "labelY": 240
+    },
+    {
+      "name": "P_Servidores",
+      "initialMarking": 4,
+      "stringMarking": "N_SERV",
+      "initialStringMarking": "N_SERV",
+      "id": "p3",
+      "x": 580,
+      "y": 200,
+      "labelX": 580,
+      "labelY": 240
+    },
+    {
+      "name": "P_ProcEst",
+      "initialMarking": 0,
+      "stringMarking": "0",
+      "initialStringMarking": "0",
+      "id": "p4",
+      "x": 740,
+      "y": 120,
+      "labelX": 740,
+      "labelY": 160
+    },
+    {
+      "name": "P_ProcDin",
+      "initialMarking": 0,
+      "stringMarking": "0",
+      "initialStringMarking": "0",
+      "id": "p5",
+      "x": 740,
+      "y": 280,
+      "labelX": 740,
+      "labelY": 320
+    }
+  ],
+  "definitions": [
+    {
+      "name": "LAMBDA",
+      "type": "DOUBLE",
+      "value": "70",
+      "id": "def0"
+    },
+    {
+      "name": "IAT",
+      "type": "DOUBLE",
+      "value": "1/LAMBDA",
+      "id": "def1"
+    },
+    {
+      "name": "ST_EST",
+      "type": "DOUBLE",
+      "value": "0.02",
+      "id": "def2"
+    },
+    {
+      "name": "ST_DIN",
+      "type": "DOUBLE",
+      "value": "0.13",
+      "id": "def3"
+    },
+    {
+      "name": "N_SERV",
+      "type": "INTEGER",
+      "value": "4",
+      "id": "def4"
+    },
+    {
+      "name": "K_SIS",
+      "type": "INTEGER",
+      "value": "16",
+      "id": "def5"
+    }
+  ],
+  "rewardMeasures": [
+    {
+      "name": "TP",
+      "expression": "(E{#P_ProcEst} / ST_EST + E{#P_ProcDin} / ST_DIN)",
+      "id": "rm0"
+    },
+    {
+      "name": "U",
+      "expression": "((E{#P_ProcEst} + E{#P_ProcDin}) / N_SERV) * 100",
+      "id": "rm1"
+    },
+    {
+      "name": "DP",
+      "expression": "P{#P_Vagas = 0} * 100",
+      "id": "rm2"
+    },
+    {
+      "name": "MRT",
+      "expression": "(E{#P_Fila} + (E{#P_ProcEst} + E{#P_ProcDin})) / (E{#P_ProcEst} / ST_EST + E{#P_ProcDin} / ST_DIN)",
+      "id": "rm3"
+    },
+    {
+      "name": "MQT",
+      "expression": "E{#P_Fila} / (E{#P_ProcEst} / ST_EST + E{#P_ProcDin} / ST_DIN)",
+      "id": "rm4"
+    },
+    {
+      "name": "MPT",
+      "expression": "(E{#P_ProcEst} + E{#P_ProcDin}) / (E{#P_ProcEst} / ST_EST + E{#P_ProcDin} / ST_DIN)",
+      "id": "rm5"
+    }
+  ],
+  "transitions": [
+    {
+      "name": "T_Chegada",
+      "type": "TIMED",
+      "firingPolicy": "SINGLE_SERVER",
+      "raceType": "RACE_WITH_ENABLING_MEMORY",
+      "priority": 1,
+      "inputArcs": [
+        {
+          "type": "INPUT",
+          "place": "P_Vagas",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "outputArcs": [
+        {
+          "type": "OUTPUT",
+          "place": "P_Fila",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "inhibitorArcs": [],
+      "distribution": {
+        "type": "exponential",
+        "parameters": {
+          "Mean delay": "IAT"
+        }
+      },
+      "id": "t1",
+      "x": 270,
+      "y": 200,
+      "labelX": 270,
+      "labelY": 240
+    },
+    {
+      "name": "T_IniciarEst",
+      "type": "IMMEDIATE",
+      "firingPolicy": "SINGLE_SERVER",
+      "raceType": "RACE_WITH_ENABLING_MEMORY",
+      "priority": 1,
+      "inputArcs": [
+        {
+          "type": "INPUT",
+          "place": "P_Fila",
+          "multiplicity": 1,
+          "weight": 1
+        },
+        {
+          "type": "INPUT",
+          "place": "P_Servidores",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "outputArcs": [
+        {
+          "type": "OUTPUT",
+          "place": "P_ProcEst",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "inhibitorArcs": [],
+      "weight": 7,
+      "id": "t2",
+      "x": 580,
+      "y": 120,
+      "labelX": 580,
+      "labelY": 160
+    },
+    {
+      "name": "T_IniciarDin",
+      "type": "IMMEDIATE",
+      "firingPolicy": "SINGLE_SERVER",
+      "raceType": "RACE_WITH_ENABLING_MEMORY",
+      "priority": 1,
+      "inputArcs": [
+        {
+          "type": "INPUT",
+          "place": "P_Fila",
+          "multiplicity": 1,
+          "weight": 1
+        },
+        {
+          "type": "INPUT",
+          "place": "P_Servidores",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "outputArcs": [
+        {
+          "type": "OUTPUT",
+          "place": "P_ProcDin",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "inhibitorArcs": [],
+      "weight": 3,
+      "id": "t3",
+      "x": 580,
+      "y": 280,
+      "labelX": 580,
+      "labelY": 320
+    },
+    {
+      "name": "T_ServEst",
+      "type": "TIMED",
+      "firingPolicy": "INFINITY_SERVER",
+      "raceType": "RACE_WITH_ENABLING_MEMORY",
+      "priority": 1,
+      "inputArcs": [
+        {
+          "type": "INPUT",
+          "place": "P_ProcEst",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "outputArcs": [
+        {
+          "type": "OUTPUT",
+          "place": "P_Servidores",
+          "multiplicity": 1,
+          "weight": 1
+        },
+        {
+          "type": "OUTPUT",
+          "place": "P_Vagas",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "inhibitorArcs": [],
+      "distribution": {
+        "type": "exponential",
+        "parameters": {
+          "Mean delay": "ST_EST"
+        }
+      },
+      "id": "t4",
+      "x": 900,
+      "y": 120,
+      "labelX": 900,
+      "labelY": 160
+    },
+    {
+      "name": "T_ServDin",
+      "type": "TIMED",
+      "firingPolicy": "INFINITY_SERVER",
+      "raceType": "RACE_WITH_ENABLING_MEMORY",
+      "priority": 1,
+      "inputArcs": [
+        {
+          "type": "INPUT",
+          "place": "P_ProcDin",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "outputArcs": [
+        {
+          "type": "OUTPUT",
+          "place": "P_Servidores",
+          "multiplicity": 1,
+          "weight": 1
+        },
+        {
+          "type": "OUTPUT",
+          "place": "P_Vagas",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "inhibitorArcs": [],
+      "distribution": {
+        "type": "exponential",
+        "parameters": {
+          "Mean delay": "ST_DIN"
+        }
+      },
+      "id": "t5",
+      "x": 900,
+      "y": 280,
+      "labelX": 900,
+      "labelY": 320
+    }
+  ],
+  "visualElements": [],
+  "arcs": [
+    {
+      "id": "a1",
+      "source": "p1",
+      "target": "t1",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "right",
+      "targetAnchorAngle": 180,
+      "lineType": "straight"
+    },
+    {
+      "id": "a2",
+      "source": "t1",
+      "target": "p2",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "right",
+      "targetAnchorAngle": 180,
+      "lineType": "straight"
+    },
+    {
+      "id": "a3",
+      "source": "p2",
+      "target": "t2",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "right",
+      "targetAnchorAngle": 180,
+      "lineType": "straight"
+    },
+    {
+      "id": "a4",
+      "source": "p3",
+      "target": "t2",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "right",
+      "targetAnchorAngle": 180,
+      "lineType": "straight"
+    },
+    {
+      "id": "a5",
+      "source": "t2",
+      "target": "p4",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "right",
+      "targetAnchorAngle": 180,
+      "lineType": "straight"
+    },
+    {
+      "id": "a6",
+      "source": "p2",
+      "target": "t3",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "right",
+      "targetAnchorAngle": 180,
+      "lineType": "straight"
+    },
+    {
+      "id": "a7",
+      "source": "p3",
+      "target": "t3",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "right",
+      "targetAnchorAngle": 180,
+      "lineType": "straight"
+    },
+    {
+      "id": "a8",
+      "source": "t3",
+      "target": "p5",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "right",
+      "targetAnchorAngle": 180,
+      "lineType": "straight"
+    },
+    {
+      "id": "a9",
+      "source": "p4",
+      "target": "t4",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "right",
+      "targetAnchorAngle": 180,
+      "lineType": "straight"
+    },
+    {
+      "id": "a10",
+      "source": "t4",
+      "target": "p3",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "left",
+      "targetAnchorAngle": 0,
+      "lineType": "straight"
+    },
+    {
+      "id": "a11",
+      "source": "t4",
+      "target": "p1",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "left",
+      "targetAnchorAngle": 0,
+      "lineType": "straight"
+    },
+    {
+      "id": "a12",
+      "source": "p5",
+      "target": "t5",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "right",
+      "targetAnchorAngle": 180,
+      "lineType": "straight"
+    },
+    {
+      "id": "a13",
+      "source": "t5",
+      "target": "p3",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "left",
+      "targetAnchorAngle": 0,
+      "lineType": "straight"
+    },
+    {
+      "id": "a14",
+      "source": "t5",
+      "target": "p1",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "left",
+      "targetAnchorAngle": 0,
+      "lineType": "straight"
+    }
+  ],
+  "chartSquare": false,
+  "executions": []
+}
