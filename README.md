@@ -8,12 +8,10 @@ Neste projeto, propõe-se e avalia-se um modelo **GSPN** no simulador **Jupiter 
 
 ### 🏗️ Arquitetura e Parâmetros de Referência
 
-| Parâmetro                     |      Símbolo      |    Valor Base     | Descrição                                                  |
-| :---------------------------- | :---------------: | :---------------: | :--------------------------------------------------------- |
-| **Taxa de chegada**           |     $\lambda$     |    `70 req/s`     | Processo de chegada exponencial ($\text{IAT} = 1/\lambda$) |
-| **Serviço estático (_hit_)**  | $\text{ST\_EST}$  | `0,02 s` (20 ms)  | Atendimento rápido via cache em memória (peso 70%)         |
-| **Serviço dinâmico (_miss_)** | $\text{ST\_DIN}$  | `0,13 s` (130 ms) | Processamento de aplicação/banco de dados (peso 30%)       |
-| **Pool de workers**           | $N_{\text{SERV}}$ |    `4 workers`    | Número máximo de requisições atendidas em paralelo         |
-| **Capacidade total**          | $K_{\text{SIS}}$  |     `16 req`      | Limite total do sistema (4 em serviço + 12 em fila)        |
-
----
+| Parâmetro                     |       Símbolo       |    Valor Base     | Descrição                                                    |
+| :---------------------------- | :-----------------: | :---------------: | :----------------------------------------------------------- |
+| **Taxa de chegada**           |      $\lambda$      |    `70 req/s`     | Processo de chegada exponencial ($\mathrm{IAT} = 1/\lambda$) |
+| **Serviço estático (_hit_)**  | $\mathrm{ST\_EST}$  | `0,02 s` (20 ms)  | Atendimento rápido via cache em memória (peso 70%)           |
+| **Serviço dinâmico (_miss_)** | $\mathrm{ST\_DIN}$  | `0,13 s` (130 ms) | Processamento de aplicação/banco de dados (peso 30%)         |
+| **Pool de workers**           | $N_{\mathrm{SERV}}$ |    `4 workers`    | Número máximo de requisições atendidas em paralelo           |
+| **Capacidade total**          | $K_{\mathrm{SIS}}$  |     `16 req`      | Limite total do sistema (4 em serviço + 12 em fila)          |
